@@ -134,14 +134,12 @@ shapes['push']({height: 44, base: 33});    // https://developer.mozilla.org/en-U
 console['log'](shapes);
 
 //Log out the triangle's `hypotenuse` property (don't calculate it, just log out
-//the current property value!). What do you get?
+//the current property value!). What do you get? :)
 
 console['log'](shapes['hypotenuse']);
 
 //Assign the triangle inside the `shapes` array a 'hypotenuse' property of `55`.
-//Log out the `shapes` array again.
-//Visually check: what happens if you inspect the previously logged array in the 
-//Chrome developer console?
+//Log out the `shapes` array again. :)
 
 shapes[2] = {hypotenuse: 55, base: 33, height: 44};
 console['log'](shapes);
