@@ -38,35 +38,83 @@ let huskyGames2016 = [
 //UW's opponent (whether or not that was the home team!)
 //You can test this by passing in an individual element from the array.
 
+function extractOpponent(gameObject){
+  if (gameObject['home'] !== "UW"){
+    return gameObject['home'];
+  }
+  else{
+    return gameObject['opponent'];
+  }
+  }
 
 //Use the `map()` method and your `extractOpponent()` function to create an array
 //of UW's opponents for the season (in the same order as in the `huskyGames2016`).
 //The opponents in the list do not need to be unique.
 //Log out the opponents array.
-
+var UWopponents = huskyGames2016['map'](extractOpponent); //https://www.w3schools.com/jsref/jsref_map.asp
+console['log'](UWopponents);
 
 //Define a function `huskiesLost()` that takes in a "game" object and returns
-//whether or not UW lost.
+//whether or not UW lost
 
+function huskiesLost(gameObject){
+  if (gameObject['opponent'] !== "UW" && gameObject['home_score'] > gameObject['opponent_score']){
+    return false;
+  }
+  else if (gameObject['opponent'] == "UW" && gameObject['opponent_score'] > gameObject['home_score']){
+    return false;
+  }
+  else if (gameObject['home'] !== "UW" && gameObject['opponent_score'] > gameObject['home_score']){
+  return false;
+  } 
+  else{
+  return true;
+  }
+}
 
 //Use the `filter()` method to create an array of games that UW lost (a smaller
 //array than the games they won!)
 //Log out the array of lost games.
 
+var gamesUWLost = huskyGames2016['filter'](huskiesLost);
+console['log'](gamesUWLost);
+
 
 //Log out an array of opponents that UW lost to. Hint: Use the `.map()` method 
 //to extract the opponent names!
 
+var opponentsUWLostTo = gamesUWLost['map'](extractOpponent);
+console['log'](opponentsUWLostTo);
 
 //Use a `forEach()` loop to log out each of the games UW lost, each on its own 
 //line, in the following format:
 //    "Rutgers at UW, 13 to 48"
 //You should use an anonymous callback function.
 
+// https://www.w3schools.com/jsref/jsref_foreach.asp
+
+gamesUWLost['forEach'](function(gameObject){
+  console['log'](gameObject['opponent'] + 
+  ' at ' + gameObject['home'] +
+   ', ' + gameObject['opponent_score'] + 
+   ' to ' + gameObject['home_score']);
+});
 
 //Use the `filter()` method with an anonymous callback function to get an array
 //of games where UW had at least one fumble.
 //Log out HOW MANY games included fumbles.
+
+var fumbles = huskyGames2016['filter'](function(gameObject) {
+  if (gameObject['fumbles'] >= 1){
+    return true;
+  }
+  else{
+  return false;
+  }
+});
+
+var numFumbles = fumbles['length'];
+console['log'](numFumbles);
 
 
 //Define a function `mostYardsPassing()` that takes in two "game" objects and
@@ -74,6 +122,21 @@ let huskyGames2016 = [
 //Your function should handle the case where the _first_ game has no 
 //`passing_yards` property, in which case it should return the second game.
 
+
+function mostYardsPassing(firstGame, secondGame){
+  if (firstGame['passing_yards'] > secondGame['passing_yards']){
+    return firstGame;
+  }
+  else if (!secondGame['passing_yards']){
+    return firstGame;
+  }
+  else if (!firstGame['passing_yards']){
+    return secondGame;
+  }
+  else {
+    return secondGame;
+  }
+}
 
 //Create a variable `mostPassingGame` that refers to the "game" that had the most
 //passing yards in the season. Use the `reduce()` method with `mostYardsPassing()`
@@ -85,6 +148,9 @@ let huskyGames2016 = [
 //Log out the game with the most passing yards.
 
 
+var mostPassingGame = huskyGames2016['reduce'](mostYardsPassing);
+console['log'](mostPassingGame);
+
 
 //It would be useful to be able to apply multiple "filter criteria" to an array
 //of games at once.
@@ -95,6 +161,13 @@ let huskyGames2016 = [
 //callback functions and "anding" (&&) the results. The `makeCombinedFilter()` 
 //function should then return this new function.
 
+function makeCombinedFilter(callbackInput1, callbackInput2) {
+  var combinedFilter = function combinedFilter(gameObject) {
+    return callbackInput1(gameObject) && callbackInput2(gameObject);
+  };
+  return combinedFilter;
+}
+
 
 //Create a variable `fumbledAndLostFilter` which is the result of calling the 
 //`makeCombinedFilter()` function and passing two callback functions: 
@@ -103,15 +176,20 @@ let huskyGames2016 = [
 //callback like you used earlier).
 //Note that `fumbledAndLostFilter` _is_ a function!
 
+var fumbledAndLostFilter = makeCombinedFilter(huskiesLost, function(gameObject){
+  var fumbles;
+
+  if (gameObject['fumbles'] >= 1){
+    fumbles = true;
+  }
+  else{
+    fumbles = false;
+  }
+  return fumbles;
+});
 
 //Create an array of games that UW lost with fumbles. Use the 
 //`fumbledAndLostFilter()` function as a callback to the `filter()` method.
 //Log out the array of games lost with fumbles.
-
-
-
-//OPTIONAL extra practice: create a variable `avgScoreDifference` that
-//represents the average number of points UW scored _over_ their opponent
-//(this value would be negative for games they lost). Use the `reduce()`
-//method with an anonymous callback function.
-
+var gamesUWLostWithFumbles = huskyGames2016['filter'](fumbledAndLostFilter);
+console['log'](gamesUWLostWithFumbles);
